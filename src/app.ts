@@ -1,0 +1,60 @@
+import express, { Application, Request, Response } from "express";
+import mongoose from "mongoose";
+import fileUpload from "express-fileupload";
+import cors from "cors";
+import compression from "compression";
+
+import { resolve } from "path";
+import { config } from "dotenv";
+
+import { SessionController } from "./controllers/Session.controller";
+import { UserController } from "./controllers/User.controller";
+
+config({ path: resolve(__dirname, "../.env") });
+
+class App {
+    public app: Application;
+    public session_controller : SessionController;
+    public user_controller : UserController;
+
+
+    constructor() {
+        this.app = express();
+        this.setConfig();
+        this.setMongoConfig();
+
+        this.session_controller = new SessionController(this.app);
+        this.user_controller = new UserController(this.app);
+    };
+
+    private setConfig() {
+
+        this.app.use(fileUpload());
+        this.app.use(compression());
+        this.app.use(express.json({ limit: "50mb" }));
+        this.app.use(express.urlencoded({ limit: "50mb", extended: true }));
+        this.app.use(cors());
+
+        this.app.use(async (req: Request, res: Response, next) => {
+            next();
+        });     
+    };
+
+    private setMongoConfig() {
+        mongoose.Promise = global.Promise;
+
+        mongoose.connect(process.env.MNG_URI!, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err: any) => {
+            if (err) {
+                console.log(err.message);
+            } else {
+                console.log("Base de datos Conectada!");
+            }
+        });
+    };
+
+};
+
+
+
+
+export default new App().app
