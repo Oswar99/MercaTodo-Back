@@ -23,5 +23,8 @@ export class ProductController{
         
         this.app.route("/v2/products/:id")
             .get(this.product_controller.getTop5);
+            
+        this.app.route("/v3/products/:id")
+            .get(this.product_controller.getAllP);
     };
 };

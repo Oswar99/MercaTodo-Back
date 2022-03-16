@@ -10,6 +10,8 @@ import { config } from "dotenv";
 import { SessionController } from "./controllers/Session.controller";
 import { UserController } from "./controllers/User.controller";
 import { FileController } from "./controllers/File.controller";
+import { CategoryController } from "./controllers/Category.controller";
+import { ProductController } from "./controllers/Product.controller";
 
 config({ path: resolve(__dirname, "../.env") });
 
@@ -20,6 +22,8 @@ class App {
     public session_controller : SessionController;
     public user_controller : UserController;
     public file_controller : FileController;
+    public cat_controller : CategoryController;
+    public pro_controller : ProductController;
 
 
     constructor() {
@@ -31,7 +35,9 @@ class App {
         this.session_controller = new SessionController(this.app);
         this.user_controller = new UserController(this.app);
         this.file_controller = new FileController(this.app);
-    
+        this.cat_controller = new CategoryController(this.app);
+        this.pro_controller = new ProductController(this.app);
+
     };
 
     private setConfig() {

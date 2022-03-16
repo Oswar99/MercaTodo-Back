@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { Request, Response } from "express";
 import { decodeModel, encodeModel } from "../helpers/jwt.helper";
 import SessionHelper from "../helpers/Session.helper";
@@ -23,6 +24,7 @@ export class CategoryService extends SessionHelper {
     };
 
     public async newCategory(req: Request, res: Response) {
+        console.log("dasd")
         try {
             const body = await decodeModel(req.body.key);
             const access = await super.getAccess(body.key);
@@ -35,7 +37,7 @@ export class CategoryService extends SessionHelper {
                     date: new Date(),
                 });
 
-                Category.find({ name: body.name, shop: body.shop }, (err: Error, categories: ICategory[]) => {
+                Category.find({ name: body.name }, (err: Error, categories: ICategory[]) => {
                     if (!err && categories.length === 0) {
                         category.save((err: any, category: ICategory) => {
                             if (!err) {

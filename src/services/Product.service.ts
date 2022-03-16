@@ -7,6 +7,7 @@ import { IProduct, Product } from "../models/product.model";
 export class ProductService extends SessionHelper {
 
     public async newProduct(req: Request, res: Response) {
+        console.log("pro")
         try {
             const body = await decodeModel(req.body.key);
             const access = await super.getAccess(body.key);
@@ -44,11 +45,11 @@ export class ProductService extends SessionHelper {
         try {
             const body = await decodeModel(req.params.id);
             const access = await super.getAccess(body.key);
-            
+
             if (access.status) {
                 await Product.deleteMany(body.filter);
-                await File.deleteMany({father: body.id})
-                res.status(200).json({successed:true});
+                await File.deleteMany({ father: body.id })
+                res.status(200).json({ successed: true });
             };
 
         } catch (error) {
@@ -74,16 +75,38 @@ export class ProductService extends SessionHelper {
             };
 
             if (access.status) {
-                Product.findOneAndUpdate({_id: body.product}, dataBody, null, (err:any, doc: any)=>{
-                    if(!err){
+                Product.findOneAndUpdate({ _id: body.product }, dataBody, null, (err: any, doc: any) => {
+                    if (!err) {
                         console.log(doc)
-                        res.status(200).json({successed:true, father: doc._id });
-                    }else{
-                        res.status(200).json({successed:false});
+                        res.status(200).json({ successed: true, father: doc._id });
+                    } else {
+                        res.status(200).json({ successed: false });
                     };
                 });
             };
 
+        } catch (error) {
+            res.status(404).json({ successed: false });
+        };
+    };
+
+    public async getAllP(req: Request, res: Response) {
+        try {
+            const body = await decodeModel(req.params.id);
+            const filter = {
+                "$and": [
+                    body.filter,
+                ]
+            };
+            Product.find(filter, null, { sort: { date: -1 } }).limit(body.limit ? body.limit : 100).exec((err: any, products: IProduct[]) => {
+                if (!err) {
+                    const data = encodeModel(products);
+                    res.status(200).json({ successed: true, key: data })
+                } else {
+                    res.status(200).json({ successed: false })
+                    console.log(err.message);
+                };
+            });
         } catch (error) {
             res.status(404).json({ successed: false });
         };
@@ -98,11 +121,10 @@ export class ProductService extends SessionHelper {
                 const filter = {
                     "$and": [
                         { user: access.user._id },
-                        body.tienda ? { shop: body.tienda } : {},
                         body.filter,
                     ]
                 };
-                Product.find(filter, null, { sort: { date: -1 } }).limit(body.limit? body.limit : 100).exec( (err: any, products: IProduct[]) => {
+                Product.find(filter, null, { sort: { date: -1 } }).limit(body.limit ? body.limit : 100).exec((err: any, products: IProduct[]) => {
                     if (!err) {
                         const data = encodeModel(products);
                         res.status(200).json({ successed: true, key: data })
@@ -126,7 +148,7 @@ export class ProductService extends SessionHelper {
             //        body.filter,
             //    ]
             //};
-            
+
             Product.find(body.filter, (err: Error, products: IProduct[]) => {
                 if (!err) {
                     const data = encodeModel(products);
@@ -147,7 +169,6 @@ export class ProductService extends SessionHelper {
 
             const filter = {
                 "$and": [
-                    body.tienda ? { shop: body.tienda } : {},
                     body.filter,
                 ]
             };
