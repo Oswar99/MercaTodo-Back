@@ -1,0 +1,31 @@
+import mongoose from "mongoose";
+import { ICategory } from "./category.model";
+import { IUser } from "./user.model";
+
+export interface IProduct extends mongoose.Document{
+    user: IUser,
+    marca: string,
+    modelo: string,
+    name: string,
+    description: string,
+    tag: string,
+    value: number,
+    date: Date,
+    count: number,
+    category: ICategory,
+};
+
+const ProductSchema = new mongoose.Schema({
+    user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+    marca: {type:String, required: true},
+    modelo: {type:String, default: "N/A"},
+    name: {type:String, required: true},
+    description: {type:String, required: true},
+    tag: {type:String, required: true},
+    value: {type:Number, required: true},
+    date:  {type:Date, default: new Date()},
+    count: {type:Number, required: true},
+    category: {type: mongoose.Schema.Types.ObjectId, ref: "Category"},
+});
+
+export const Product = mongoose.model<IProduct>("Product", ProductSchema);

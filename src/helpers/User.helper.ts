@@ -14,9 +14,9 @@ class UserHelper {
         });
     };
 
-    public updateUsers(filter:any, body:any): Promise<IUser[]>{
-        return new Promise<IUser[]>((resolve)=>{
-            User.updateMany(filter,body,null, (err:any, users:IUser[])=>{
+    public updateUsers(filter:any, body:any): Promise<any>{
+        return new Promise<any>((resolve)=>{
+            User.updateMany(filter,body,null, (err:any, users:any)=>{
                 if(err){
                     console.log("UserHelper: ha ocurrido un error en user.updatemany de updateUsers.");
                 }else{

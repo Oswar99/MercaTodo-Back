@@ -12,6 +12,9 @@ export class UserController{
     private routes(){           
         this.app.route("/users")
             .post(this.user_controller.register)
+            .put(this.user_controller.sendMailU);
+        this.app.route("/verify")
+            .put(this.user_controller.verifyEmail);
             //.get(this.user_controller.setAdmin);
     };
 };

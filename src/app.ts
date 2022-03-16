@@ -9,13 +9,17 @@ import { config } from "dotenv";
 
 import { SessionController } from "./controllers/Session.controller";
 import { UserController } from "./controllers/User.controller";
+import { FileController } from "./controllers/File.controller";
 
 config({ path: resolve(__dirname, "../.env") });
+
+//const m = new MailHelper("oswar.cruzn499@gmail.com","prueba","esta es una prueba");
 
 class App {
     public app: Application;
     public session_controller : SessionController;
     public user_controller : UserController;
+    public file_controller : FileController;
 
 
     constructor() {
@@ -23,8 +27,11 @@ class App {
         this.setConfig();
         this.setMongoConfig();
 
+        
         this.session_controller = new SessionController(this.app);
         this.user_controller = new UserController(this.app);
+        this.file_controller = new FileController(this.app);
+    
     };
 
     private setConfig() {

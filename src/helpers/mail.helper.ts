@@ -5,12 +5,12 @@ import {resolve} from "path";
 config({path: resolve(__dirname, "../.env")});
 
 const transp = nodemailer.createTransport({
-    host: process.env.CHS,
+    host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth:{
-        user: process.env.CRR,
-        pass: process.env.CPP
+        user: "proyecto.mercatodo@gmail.com",
+        pass: "MercaTodo*"
     }
 });
 
@@ -28,7 +28,7 @@ class MailHelper{
     public sendMail():Promise<boolean>{
         return new Promise<boolean>(async(resolve)=>{
             const mailOps = {
-                from: process.env.CRR,
+                from: "proyecto.mercatodo@gmail.com",
                 to: this.to,
                 subject: this.subject,
                 text: this.text
@@ -43,8 +43,8 @@ class MailHelper{
                     resolve(true);
                 }
             });
-        })
+        });
     };
-}
+};
 
 export default MailHelper;
