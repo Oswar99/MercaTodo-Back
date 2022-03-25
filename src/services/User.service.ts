@@ -80,6 +80,25 @@ export class UserService extends SessionHelper {
         };
     };
 
+    public async getUser(req: Request, res: Response){
+        const body = await decodeModel(req.params.id);
+        const access = await super.getAccess(body.key);
+
+        if (access.status) {
+            super.getUsers(body.filter).then(v=>{
+                if(v.length > 0){
+                    res.status(200).json({successed:true, key: encodeModel({
+                        mail: v[0].user_mail,
+                        name: v[0].user_name,
+                        dep: v[0].user_dep
+                    })});
+                }else{
+                    res.status(200).json({successed:false});
+                };
+            });
+        };
+    };
+
     public async verifyEmail(req: Request, res: Response){
         const body = await decodeModel(req.body.key);
         const tk = await decodeModel(body.tk);

@@ -93,19 +93,17 @@ export class ProductService extends SessionHelper {
     public async getAllP(req: Request, res: Response) {
         try {
             const body = await decodeModel(req.params.id);
-            const filter = {
-                "$and": [
-                    body.filter,
-                ]
-            };
-            Product.find(filter, null, { sort: { date: -1 } }).limit(body.limit ? body.limit : 100).exec((err: any, products: IProduct[]) => {
-                if (!err) {
-                    const data = encodeModel(products);
-                    res.status(200).json({ successed: true, key: data })
-                } else {
-                    res.status(200).json({ successed: false })
-                    console.log(err.message);
-                };
+            
+            Product.countDocuments(body.filter).then(y=>{
+                Product.find(body.filter, null, { sort: { date: -1 } }).skip(body.skip? body.skip : 0).limit(body.limit ? body.limit : 100).exec((err: any, products: IProduct[]) => {
+                    if (!err) {
+                        const data = encodeModel(products);
+                        res.status(200).json({ successed: true, key: data, count: y })
+                    } else {
+                        res.status(200).json({ successed: false })
+                        console.log(err.message);
+                    };
+                });
             });
         } catch (error) {
             res.status(404).json({ successed: false });

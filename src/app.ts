@@ -12,6 +12,7 @@ import { UserController } from "./controllers/User.controller";
 import { FileController } from "./controllers/File.controller";
 import { CategoryController } from "./controllers/Category.controller";
 import { ProductController } from "./controllers/Product.controller";
+import { ChatController } from "./controllers/chat.controller";
 
 config({ path: resolve(__dirname, "../.env") });
 
@@ -24,6 +25,7 @@ class App {
     public file_controller : FileController;
     public cat_controller : CategoryController;
     public pro_controller : ProductController;
+    public chat_controller : ChatController;
 
 
     constructor() {
@@ -37,6 +39,7 @@ class App {
         this.file_controller = new FileController(this.app);
         this.cat_controller = new CategoryController(this.app);
         this.pro_controller = new ProductController(this.app);
+        this.chat_controller = new ChatController(this.app);
 
     };
 

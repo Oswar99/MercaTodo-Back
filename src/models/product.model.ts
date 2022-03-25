@@ -12,6 +12,8 @@ export interface IProduct extends mongoose.Document{
     value: number,
     date: Date,
     count: number,
+    enabled: boolean,
+    departament: string,
     category: ICategory,
 };
 
@@ -24,7 +26,9 @@ const ProductSchema = new mongoose.Schema({
     tag: {type:String, required: true},
     value: {type:Number, required: true},
     date:  {type:Date, default: new Date()},
-    count: {type:Number, required: true},
+    count: {type:Number, required: false},
+    enabled: {type:Boolean, default: true},
+    departament: {type:String, default:"FRANCISCO MORAZAN"},
     category: {type: mongoose.Schema.Types.ObjectId, ref: "Category"},
 });
 
