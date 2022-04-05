@@ -1,3 +1,4 @@
+import { Score } from "../models/score.model";
 import { IUser, User } from "../models/user.model";
 
 class UserHelper {
@@ -23,6 +24,18 @@ class UserHelper {
                     resolve(users);
                 };
             });
+        });
+    };
+
+    public getUserScore(user: any):Promise<any>{
+        return new Promise<any>(async (resolve) => {
+            const c1 = await Score.countDocuments({user: user, score: 1});
+            const c2 = await Score.countDocuments({user: user, score: 2});
+            const c3 = await Score.countDocuments({user: user, score: 3});
+            const c4 = await Score.countDocuments({user: user, score: 4});
+            const c5 = await Score.countDocuments({user: user, score: 5}) + 1;
+            const result = ((c5 * 5) + (c4 * 4) + (c3 * 3) + (c2 * 2) + (c1 * 1)) / (c5 + c4 + c3 + c2 + c1);
+            resolve(result);
         });
     };
 

@@ -70,7 +70,6 @@ export class CategoryService extends SessionHelper {
 
             Category.find(filter, null, { sort: { date: -1 } }).exec((err: any, categories: ICategory[]) => {
                 if (!err) {
-                    console.log(categories)
                     const data = encodeModel(categories);
                     res.status(200).json({ successed: true, key: data })
                 } else {

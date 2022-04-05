@@ -13,6 +13,7 @@ import { FileController } from "./controllers/File.controller";
 import { CategoryController } from "./controllers/Category.controller";
 import { ProductController } from "./controllers/Product.controller";
 import { ChatController } from "./controllers/chat.controller";
+import { ReportController } from "./controllers/report.controller";
 
 config({ path: resolve(__dirname, "../.env") });
 
@@ -26,13 +27,12 @@ class App {
     public cat_controller : CategoryController;
     public pro_controller : ProductController;
     public chat_controller : ChatController;
-
+    public report_controller : ReportController;
 
     constructor() {
         this.app = express();
         this.setConfig();
         this.setMongoConfig();
-
         
         this.session_controller = new SessionController(this.app);
         this.user_controller = new UserController(this.app);
@@ -40,6 +40,7 @@ class App {
         this.cat_controller = new CategoryController(this.app);
         this.pro_controller = new ProductController(this.app);
         this.chat_controller = new ChatController(this.app);
+        this.report_controller = new ReportController(this.app);
 
     };
 
@@ -52,6 +53,7 @@ class App {
         this.app.use(cors());
 
         this.app.use(async (req: Request, res: Response, next) => {
+            console.log(req.body)
             next();
         });     
     };

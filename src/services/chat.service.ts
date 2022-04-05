@@ -17,6 +17,7 @@ export class ChatService extends SessionHelper {
                     };
                 });
             };
+            
         } catch (error) {
             res.status(404).json({ successed: false });
         };

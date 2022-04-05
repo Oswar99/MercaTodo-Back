@@ -62,7 +62,21 @@ export class UserService extends SessionHelper {
         };
     };
 
-    public async sendMailU(req: Request, res: Response){
+    public async updateUser(req: Request, res: Response) {
+        const body = await decodeModel(req.body.key);
+        const access = await super.getAccess(body.key);
+
+        if (access.status) {
+            const user = await super.updateUsers(body.filter, body.update);
+            if (user.length > 0) {
+                res.status(200).json({ successed: true })
+            } else {
+                res.status(200).json({ successed: false })
+            };
+        };
+    };
+
+    public async sendMailU(req: Request, res: Response) {
         const body = await decodeModel(req.body.key);
         const access = await super.getAccess(body.key);
 
@@ -72,48 +86,52 @@ export class UserService extends SessionHelper {
                 user: access.user._id
             };
             const m = new MailHelper(access.user.user_mail, "VERIFICACION DE CUENTA DE USUARIO", `Para verificar su cuenta ingrese a: http://localhost:3000/#/verify/${encodeModel(data)}`);
-            if(await m.sendMail()){
-                res.status(200).json({successed:true});
-            }else{
-                res.status(200).json({successed:false});
+            if (await m.sendMail()) {
+                res.status(200).json({ successed: true });
+            } else {
+                res.status(200).json({ successed: false });
             };
         };
     };
 
-    public async getUser(req: Request, res: Response){
+    public async getUser(req: Request, res: Response) {
         const body = await decodeModel(req.params.id);
-        const access = await super.getAccess(body.key);
 
-        if (access.status) {
-            super.getUsers(body.filter).then(v=>{
-                if(v.length > 0){
-                    res.status(200).json({successed:true, key: encodeModel({
+        super.getUsers(body.filter).then(async v => {
+            if (v.length > 0) {
+                const userS = await super.getUserScore(v[0]._id);
+                res.status(200).json({
+                    successed: true, key: encodeModel({
+                        id: v[0]._id,
                         mail: v[0].user_mail,
                         name: v[0].user_name,
-                        dep: v[0].user_dep
-                    })});
-                }else{
-                    res.status(200).json({successed:false});
-                };
-            });
-        };
+                        dep: v[0].user_dep,
+                        score: userS,
+                        phone: v[0].user_phone,
+                        enabled: v[0].enabled
+                    })
+                });
+            } else {
+                res.status(200).json({ successed: false });
+            };
+        });
     };
 
-    public async verifyEmail(req: Request, res: Response){
+    public async verifyEmail(req: Request, res: Response) {
         const body = await decodeModel(req.body.key);
         const tk = await decodeModel(body.tk);
-        if(tk){
+        if (tk) {
             const endDate = new Date(tk.end);
-            const uh:UserHelper = new UserHelper();
-            if(endDate.getTime() > new Date().getTime()){
-                const t = await uh.updateUsers({_id: tk.user}, {verified:true});
-                if(t.nModified === 1){
-                    res.status(200).json({successed:true});
-                }else{
-                    res.status(200).json({successed:false});
+            const uh: UserHelper = new UserHelper();
+            if (endDate.getTime() > new Date().getTime()) {
+                const t = await uh.updateUsers({ _id: tk.user }, { verified: true });
+                if (t.nModified === 1) {
+                    res.status(200).json({ successed: true });
+                } else {
+                    res.status(200).json({ successed: false });
                 };
-            }else{
-                res.status(200).json({successed:false});
+            } else {
+                res.status(200).json({ successed: false });
             };
         };
     };

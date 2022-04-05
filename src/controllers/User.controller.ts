@@ -9,7 +9,11 @@ export class UserController{
         this.routes();
     };
 
-    private routes(){           
+    private routes(){
+        
+        this.app.route("/user")
+            .put(this.user_controller.updateUser);
+
         this.app.route("/users")
             .post(this.user_controller.register)
             .put(this.user_controller.sendMailU);
